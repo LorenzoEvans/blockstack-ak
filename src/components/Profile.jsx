@@ -65,7 +65,6 @@ export default class Profile extends Component {
   this.setState({isLoading: true});
 
     if (this.isLocal()) {
-      const options = {decrypt: false};
       userSession.getFile('posts.json', options)
         .then((file) => {
           let posts = JSON.parse(file || '[]');
@@ -76,12 +75,13 @@ export default class Profile extends Component {
             posts: posts,
           })
         })
+        .catch((error) => {
+          console.log(error.message)
+        })
         .finally(() => {
           this.setState({isLoading: false})
-        })
-        .catch((error) => {
-        console.log(error.message)
-        })
+        });
+      const options = {decrypt: false};
     } else {
       const username = this.props.match.params.username;
 
@@ -95,6 +95,13 @@ export default class Profile extends Component {
         .catch((error) => {
           console.log({error: error.message, message: 'Could not resolve profile.'})
         })
+
+      const options = { username: username, decrypt: false}
+      userSession.getFile('posts.json', options)
+        .then((file) => {
+
+        })
+
     }
   }
 
