@@ -18,6 +18,11 @@ export default class Profile extends Component {
   	  	  return avatarFallbackImage;
   	  	},
   	  },
+  	  username: '',
+  	  password: '',
+  	  posts: [],
+      postIndex: 0,
+      isLoading: false,
   	};
   }
 

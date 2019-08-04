@@ -6,8 +6,8 @@ import {
   AppConfig
 } from 'blockstack';
 
-const appConfig = new AppConfig()
-const userSession = new UserSession({ appConfig: appConfig })
+const appConfig = new AppConfig(['store_write', 'publish_data']);
+const userSession = new UserSession({ appConfig: appConfig });
 
 export default class App extends Component {
 
