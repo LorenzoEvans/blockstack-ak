@@ -19,33 +19,84 @@ export default class Profile extends Component {
   	  	},
   	  },
   	  username: '',
-  	  password: '',
+  	  newStatus: '',
   	  posts: [],
       postIndex: 0,
       isLoading: false,
   	};
+  	saveNewStatuses = (text) = {
+  	  { userSession } = this.props;
+  	  let posts = this.state.posts;
+  	  let status = {
+  	    id: this.state.postIndex++,
+  	    text: text.trim(),
+  	    created_at: Date.now()
+  	  };
+  	  posts.unshift(text);
+  	  const options = { encrypt: false};
+  	  userSession.putFile('posts.json', JSON.stringify())
+  	  this.setState({})
+  	}
+  	handleNewStatusChange = (event) => {
+      this.setState({newStatus: event.target.value});
+    };
+  	handleNewStatusSubmit = (event) => {
+      this.setState()
+  	}
   }
 
   render() {
     const { handleSignOut, userSession } = this.props;
     const { person } = this.state;
+    const { username } = this.state;
+
     return (
-      !userSession.isSignInPending() ?
-      <div className="panel-welcome" id="section-2">
-        <div className="avatar-section">
-          <img src={ person.avatarUrl() ? person.avatarUrl() : avatarFallbackImage } className="img-rounded avatar" id="avatar-image" />
-        </div>
-        <h1>Hello, <span id="heading-name">{ person.name() ? person.name() : 'Nameless Person' }</span>!</h1>
-        <p className="lead">
-          <button
-            className="btn btn-primary btn-lg"
-            id="signout-button"
-            onClick={ handleSignOut.bind(this) }
-          >
-            Logout
-          </button>
-        </p>
-      </div> : null
+      !userSession.isSignInPending() && person ?
+        <div className="container">
+          <div className="row">
+            <div className="col-md-offset-3 col-md-6">
+              <div className="col-md-12">
+                <div className="avatar-section">
+                  <img
+                    src={ person.avatarUrl() ? person.avatarUrl() : avatarFallbackImage }
+                    className="img-rounded avatar"
+                    id="avatar-image"
+                  />
+                  <div className="username">
+                    <h1>
+                   <span id="heading-name">{ person.name() ? person.name()
+                     : 'Nameless Person' }</span>
+                    </h1>
+                    <span>{username}</span>
+                    <span>
+                   &nbsp;| &nbsp;
+                      <a onClick={ handleSignOut.bind(this) }>(Logout)</a>
+                 </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="new-status">
+                <div className="col-md-12">
+               <textarea className="input-status"
+                         value={this.state.newStatus}
+                         onChange={e => this.handleNewStatusChange(e)}
+                         placeholder="Enter a status"
+               />
+                </div>
+                <div className="col-md-12">
+                  <button
+                    className="btn btn-primary btn-lg"
+                    onClick={e => this.handleNewStatusSubmit(e)}
+                  >
+                    Submit
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div> : null
     );
   }
 
@@ -53,6 +104,7 @@ export default class Profile extends Component {
     const { userSession } = this.props;
     this.setState({
       person: new Person(userSession.loadUserData().profile),
+      username: userSession.loadUserData().username
     });
   }
 }
