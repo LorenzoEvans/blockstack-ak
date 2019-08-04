@@ -1,4 +1,5 @@
 import React, { Component, Link } from 'react';
+import {Router, Switch } from 'react-router-dom'
 import Profile from './Profile.jsx';
 import Signin from './Signin.jsx';
 import {
@@ -31,7 +32,20 @@ export default class App extends Component {
         <div className="site-wrapper-inner">
           { !userSession.isUserSignedIn() ?
             <Signin userSession={userSession} handleSignIn={ this.handleSignIn } />
-            : <Profile userSession={userSession} handleSignOut={ this.handleSignOut } />
+            : <Switch>
+                <Route
+                  path="/:username?"
+                  render={
+                    routerProps => <Profile
+                    userSession={userSession}
+                    handleSignOut={ this.handleSignOut }
+                    {...routerProps}
+                    />
+
+                  }
+                />
+              </Switch>
+
           }
         </div>
       </div>

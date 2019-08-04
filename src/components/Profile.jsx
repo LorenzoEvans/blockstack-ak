@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
   Person,
+  lookupProfile,
 } from 'blockstack';
 
 const avatarFallbackImage = 'https://s3.amazonaws.com/onename/avatar-placeholder.png';
@@ -38,6 +39,9 @@ export default class Profile extends Component {
     this.fetchData()
   }
 
+  isLocal() {
+    return this.props.match.params.username ? false : true
+  }
   saveNewStatus(text){
   const { userSession } = this.props;
   let posts = this.state.posts;
@@ -59,20 +63,39 @@ export default class Profile extends Component {
   fetchData(){
   const { userSession } = this.props;
   this.setState({isLoading: true});
-  const options = {decrypt: false};
-  userSession.getFile('posts.json', options)
-    .then((file) => {
-      let posts = JSON.parse(file || '[]');
-      this.setState({
-      person: new Person(userSession.loadUserData().profile),
-      username: userSession.loadUserData().username,
-      statusIndex: posts.length,
-      posts: posts,
-      })
-    })
-    .finally(() => {
-      this.setState({isLoading: false})
-    })
+
+    if (this.isLocal()) {
+      const options = {decrypt: false};
+      userSession.getFile('posts.json', options)
+        .then((file) => {
+          let posts = JSON.parse(file || '[]');
+          this.setState({
+            person: new Person(userSession.loadUserData().profile),
+            username: userSession.loadUserData().username,
+            statusIndex: posts.length,
+            posts: posts,
+          })
+        })
+        .finally(() => {
+          this.setState({isLoading: false})
+        })
+        .catch((error) => {
+        console.log(error.message)
+        })
+    } else {
+      const username = this.props.match.params.username;
+
+      lookupProfile(username)
+        .then((profile) => {
+          this.setState({
+          person: new Person(profile),
+          username: username
+          })
+        })
+        .catch((error) => {
+          console.log({error: error.message, message: 'Could not resolve profile.'})
+        })
+    }
   }
 
   handleNewStatusChange(event){
