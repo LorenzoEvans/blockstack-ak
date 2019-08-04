@@ -42,10 +42,9 @@ export default class Profile extends Component {
     text: text.trim(),
     created_at: Date.now()
   };
-
   posts.unshift(post);
   const options = {encrypt: false};
-  userSession.putfile('posts.json', JSON.stringify(posts), options)
+  userSession.putFile('posts.json', JSON.stringify(posts), options)
     .then(() => {
       this.setState({
       posts: posts
@@ -53,10 +52,21 @@ export default class Profile extends Component {
     })
   };
 
+  fetchData(){
+  const { userSession } = this.props;
+  this.setState({isLoading: true});
+  const options = {decrypt: false};
+  userSession.getFile('posts.json', options)
+    .then((file) => {
+      let posts = JSON.parse(file || '[]');
+
+    })
+  }
+
   handleNewStatusChange(event){
     this.setState({newStatus: event.target.value});
   };
-  handleNewStatusSubmit(event){
+  handleNewStatusSubmit(){
     this.saveNewStatus(this.state.newStatus);
     this.setState({
       newStatus: ''
@@ -101,6 +111,14 @@ export default class Profile extends Component {
                          onChange={e => this.handleNewStatusChange(e)}
                          placeholder="Enter a status"
                />
+               <div className="col-md-12 statuses">
+                 {this.state.isLoading && <span>Loading...</span>}
+                 {this.state.posts.map((post) => (
+                   <div className="status" key={status.id}>
+                     <h3>{post.text}</h3>
+                   </div>
+                 ))}
+               </div>
                 </div>
                 <div className="col-md-12">
                   <button
