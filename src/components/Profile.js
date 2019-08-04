@@ -24,26 +24,32 @@ export default class Profile extends Component {
       postIndex: 0,
       isLoading: false,
   	};
-  	saveNewStatuses = (text) = {
-  	  { userSession } = this.props;
-  	  let posts = this.state.posts;
-  	  let status = {
-  	    id: this.state.postIndex++,
-  	    text: text.trim(),
-  	    created_at: Date.now()
-  	  };
-  	  posts.unshift(text);
-  	  const options = { encrypt: false};
-  	  userSession.putFile('posts.json', JSON.stringify())
-  	  this.setState({})
-  	}
-  	handleNewStatusChange = (event) => {
-      this.setState({newStatus: event.target.value});
-    };
-  	handleNewStatusSubmit = (event) => {
-      this.setState()
-  	}
   }
+
+  componentWillMount() {
+    const { userSession } = this.props;
+    this.setState({
+      person: new Person(userSession.loadUserData().profile),
+      username: userSession.loadUserData().username
+    });
+  }
+
+
+  saveNewStatus = () => {
+
+  };
+
+
+  handleNewStatusChange = (event) => {
+    this.setState({newStatus: event.target.value});
+  };
+  handleNewStatusSubmit = (event) => {
+    this.saveNewStatus(this.state.newStatus);
+    this.setState({
+      newStatus: ''
+    })
+  };
+
 
   render() {
     const { handleSignOut, userSession } = this.props;
@@ -98,13 +104,5 @@ export default class Profile extends Component {
           </div>
         </div> : null
     );
-  }
+  }}
 
-  componentWillMount() {
-    const { userSession } = this.props;
-    this.setState({
-      person: new Person(userSession.loadUserData().profile),
-      username: userSession.loadUserData().username
-    });
-  }
-}

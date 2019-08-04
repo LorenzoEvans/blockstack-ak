@@ -1,5 +1,5 @@
 import React, { Component, Link } from 'react';
-import Profile from './Profile.jsx';
+import Profile from './Profile.js';
 import Signin from './Signin.jsx';
 import {
   UserSession,
