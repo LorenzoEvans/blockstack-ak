@@ -34,6 +34,10 @@ export default class Profile extends Component {
     });
   }
 
+  componentDidMount() {
+    this.fetchData()
+  }
+
   saveNewStatus(text){
   const { userSession } = this.props;
   let posts = this.state.posts;
@@ -59,7 +63,15 @@ export default class Profile extends Component {
   userSession.getFile('posts.json', options)
     .then((file) => {
       let posts = JSON.parse(file || '[]');
-
+      this.setState({
+      person: new Person(userSession.loadUserData().profile),
+      username: userSession.loadUserData().username,
+      statusIndex: posts.length,
+      posts: posts,
+      })
+    })
+    .finally(() => {
+      this.setState({isLoading: false})
     })
   }
 
@@ -115,7 +127,7 @@ export default class Profile extends Component {
                  {this.state.isLoading && <span>Loading...</span>}
                  {this.state.posts.map((post) => (
                    <div className="status" key={status.id}>
-                     <h3>{post.text}</h3>
+                     <h5>{post.text}</h5>
                    </div>
                  ))}
                </div>
