@@ -34,7 +34,6 @@ export default class Profile extends Component {
     });
   }
 
-
   saveNewStatus(text){
   const { userSession } = this.props;
   let posts = this.state.posts;
@@ -53,7 +52,6 @@ export default class Profile extends Component {
       })
     })
   };
-
 
   handleNewStatusChange(event){
     this.setState({newStatus: event.target.value});
