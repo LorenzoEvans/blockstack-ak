@@ -35,8 +35,23 @@ export default class Profile extends Component {
   }
 
 
-  saveNewStatus = () => {
+  saveNewStatus = text => {
+  const { userSession } = this.props;
+  let posts = this.state.posts;
+  let post = {
+    id: this.state.postIndex++,
+    text: text.trim(),
+    created_at: Date.now()
+  };
 
+  posts.unshift(post);
+  const options = {encrypt: false};
+  userSession.putfile('posts.json', JSON.stringify(posts), options)
+    .then(() => {
+      this.setState({
+      posts: posts
+      })
+    })
   };
 
 
