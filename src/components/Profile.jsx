@@ -142,35 +142,29 @@ export default class Profile extends Component {
                   />
                   <div className="username">
                     <h1>
-                   <span id="heading-name">{ person.name() ? person.name()
-                     : 'Nameless Person' }</span>
+                 <span id="heading-name">{ person.name() ? person.name()
+                   : 'Nameless Person' }</span>
                     </h1>
                     <span>{username}</span>
-                    { this.isLocal() && <span>
-                   &nbsp;| &nbsp;
-                      <a onClick={handleSignOut.bind(this)}>(Logout)</a>
-                 </span>}
+                    {this.isLocal() &&
+                    <span>
+                   &nbsp;|&nbsp;
+                      <a onClick={ handleSignOut.bind(this) }>(Logout)</a>
+                 </span>
+                    }
                   </div>
                 </div>
               </div>
-
-              { this.isLocal() && <div className="new-status">
+              {this.isLocal() &&
+              <div className="new-status">
                 <div className="col-md-12">
                <textarea className="input-status"
                          value={this.state.newStatus}
                          onChange={e => this.handleNewStatusChange(e)}
-                         placeholder="Enter a status"
+                         placeholder="What's on your mind?"
                />
-                  <div className="col-md-12 statuses">
-                    {this.state.isLoading && <span>Loading...</span>}
-                    {this.state.posts.map((post) => (
-                      <div className="status" key={status.id}>
-                        <h5>{post.text}</h5>
-                      </div>
-                    ))}
-                  </div>
                 </div>
-                <div className="col-md-12 statuses">
+                <div className="col-md-12 text-right">
                   <button
                     className="btn btn-primary btn-lg"
                     onClick={e => this.handleNewStatusSubmit(e)}
@@ -178,8 +172,17 @@ export default class Profile extends Component {
                     Submit
                   </button>
                 </div>
-              </div>}
-
+              </div>
+              }
+              <div className="col-md-12 statuses">
+                {this.state.isLoading && <span>Loading...</span>}
+                {this.state.posts.map((post) => (
+                    <div className="status" key={post.id}>
+                      {post.text}
+                    </div>
+                  )
+                )}
+              </div>
             </div>
           </div>
         </div> : null
