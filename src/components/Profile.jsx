@@ -99,9 +99,17 @@ export default class Profile extends Component {
       const options = { username: username, decrypt: false}
       userSession.getFile('posts.json', options)
         .then((file) => {
-
+          let posts = JSON.parse(file || '[]')
+          this.setState({
+            statusIndex: posts.length,
+            posts: posts
+          })
         })
-
+        .catch((error) => {
+          console.log({error: error.message, message: 'Could not fetch posts.'})
+        })
+        .finally(() => {})
+        this.setState({isLoading: false})
     }
   }
 
@@ -138,31 +146,31 @@ export default class Profile extends Component {
                      : 'Nameless Person' }</span>
                     </h1>
                     <span>{username}</span>
-                    <span>
+                    { this.isLocal() && <span>
                    &nbsp;| &nbsp;
-                      <a onClick={ handleSignOut.bind(this) }>(Logout)</a>
-                 </span>
+                      <a onClick={handleSignOut.bind(this)}>(Logout)</a>
+                 </span>}
                   </div>
                 </div>
               </div>
 
-              <div className="new-status">
+              { this.isLocal() && <div className="new-status">
                 <div className="col-md-12">
                <textarea className="input-status"
                          value={this.state.newStatus}
                          onChange={e => this.handleNewStatusChange(e)}
                          placeholder="Enter a status"
                />
-               <div className="col-md-12 statuses">
-                 {this.state.isLoading && <span>Loading...</span>}
-                 {this.state.posts.map((post) => (
-                   <div className="status" key={status.id}>
-                     <h5>{post.text}</h5>
-                   </div>
-                 ))}
-               </div>
+                  <div className="col-md-12 statuses">
+                    {this.state.isLoading && <span>Loading...</span>}
+                    {this.state.posts.map((post) => (
+                      <div className="status" key={status.id}>
+                        <h5>{post.text}</h5>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div className="col-md-12">
+                <div className="col-md-12 statuses">
                   <button
                     className="btn btn-primary btn-lg"
                     onClick={e => this.handleNewStatusSubmit(e)}
@@ -170,7 +178,7 @@ export default class Profile extends Component {
                     Submit
                   </button>
                 </div>
-              </div>
+              </div>}
 
             </div>
           </div>
